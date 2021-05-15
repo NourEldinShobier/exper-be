@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { GroupModule } from './group/group.module';
-import { UserModule } from './user/user.module';
-import { StudentModule } from './student/student.module';
-import { SharedModule } from './shared/shared.module';
+
+import { GroupsModule } from './groups/groups.module';
+import { UsersModule } from './users/users.module';
+import { StudentsModule } from './students/students.module';
 
 @Module({
-  imports: [GroupModule, UserModule, StudentModule, SharedModule]
+  imports: [GroupsModule, UsersModule, StudentsModule]
 })
-export class FeaturesModule {}
+export class FeaturesModule { }

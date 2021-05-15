@@ -9,4 +9,4 @@ import { InfraModule } from './infra/infra.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

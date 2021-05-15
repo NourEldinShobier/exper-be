@@ -1,20 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from 'src/infra/features/prisma/prisma.service';
 import { User, Prisma } from '@prisma/client';
-import { Scope } from '@nestjs/common';
 
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UserService {
     constructor(private prisma: PrismaService) { }
 
-    async user(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
+    async user(where: Prisma.UserWhereUniqueInput): Promise<User> {
+        // TODO: check if failure occurs if not exist
+
         return this.prisma.user.findUnique({ where });
     }
 
     async create(data: Prisma.UserCreateInput): Promise<User> {
         // TODO: create user if username is not unique
         // TODO: test and see what kind of exception it throws
+
         return this.prisma.user.create({ data });
     }
 
@@ -24,6 +26,7 @@ export class UserService {
     }): Promise<User> {
         // TODO: create user if username is not unique
         // TODO: test and see what kind of exception it throws
+        // TODO: check if failure occurs if not exist
 
         const { where, data } = params;
         return this.prisma.user.update({
@@ -33,6 +36,7 @@ export class UserService {
     }
 
     async delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
+        // TODO: check if failure occurs if not exist
         return this.prisma.user.delete({ where });
     }
 

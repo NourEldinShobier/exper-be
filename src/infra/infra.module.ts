@@ -8,4 +8,4 @@ import { MongoModule } from './features/mongo/mongo.module';
   imports: [PrismaModule, UserModule, MongoModule],
   providers: [UserService]
 })
-export class InfraModule {}
+export class InfraModule { }
