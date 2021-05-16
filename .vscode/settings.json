@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "sql-prisma",
-        "infra: config"
+        "infra: config",
+        "core: users"
     ]
 }
