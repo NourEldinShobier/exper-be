@@ -1,9 +1,8 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { PrismaService } from 'src/infra/features/prisma/prisma.service';
-import { User, Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
-
-@Injectable({ scope: Scope.DEFAULT })
+@Injectable({ scope: Scope.REQUEST })
 export class UserService {
     constructor(private prisma: PrismaService) { }
 
