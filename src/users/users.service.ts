@@ -1,9 +1,10 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable({ scope: Scope.REQUEST })
-export class UserService {
+export class UsersService {
     constructor(private prisma: PrismaService) { }
 
     async user(where: Prisma.UserWhereUniqueInput): Promise<User> {
@@ -13,10 +14,10 @@ export class UserService {
     }
 
     async create(data: Prisma.UserCreateInput): Promise<User> {
-        // TODO: create user if username is not unique
-        // TODO: test and see what kind of exception it throws
+        const salt = await bcrypt.genSalt();
+        const hash = await bcrypt.hash(data.password, salt);
 
-        return this.prisma.user.create({ data });
+        return this.prisma.user.create({ data: { ...data, password: hash } });
     }
 
     async update(params: {

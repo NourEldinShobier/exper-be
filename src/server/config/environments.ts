@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
-import { ENV } from 'src/infra/constants';
+import { ENV } from '../constants';
+
 
 dotenv.config();
 
