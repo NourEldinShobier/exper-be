@@ -1,7 +1,6 @@
-import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, ConflictException, Injectable, PipeTransform } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/users/dto';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CreateUserPipe implements PipeTransform {
@@ -10,7 +9,7 @@ export class CreateUserPipe implements PipeTransform {
   async transform(dto: CreateUserDto, _metadata: ArgumentMetadata): Promise<CreateUserDto> {
 
     if (await this.isExistingUser(dto.username)) {
-      throw new BadRequestException("Account with provided username already exists");
+      throw new ConflictException('Account with provided username already exists');
     }
 
     return dto;

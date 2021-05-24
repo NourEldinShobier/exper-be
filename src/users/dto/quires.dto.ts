@@ -1,6 +1,6 @@
-export class SignInDto { }
+export class GetUsersDto {
+}
 
-export class GetUsersDto { }
-
-export class SearchUsersDto { }
+export class SearchUsersDto {
+}
 

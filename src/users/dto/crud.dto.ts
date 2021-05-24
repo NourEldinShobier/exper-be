@@ -1,65 +1,71 @@
 import {
-    ArrayMaxSize, ArrayNotEmpty, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min
-} from "class-validator";
+  ArrayMaxSize,
+  ArrayNotEmpty,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto {
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(50)
-    readonly name: string;
 
-    @IsOptional()
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(50)
-    readonly phone?: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  readonly name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(50)
-    readonly username: string;
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  readonly phone?: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly password: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  readonly username: string;
 
-    @IsString({ each: true })
-    @ArrayNotEmpty()
-    @ArrayMaxSize(6)
-    readonly role: string[];
+  @IsString()
+  @MinLength(8)
+  @MaxLength(20)
+  @Matches(
+    /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
+    { message: 'Provided password is too weak' },
+  )
+  readonly password: string;
+
+  @IsString({ each: true })
+  @ArrayNotEmpty()
+  @ArrayMaxSize(6)
+  readonly role: string[];
 }
 
 export class UpdateUserDto {
 
-    //@IsJWT()
-    //readonly jwt: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  readonly name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(50)
-    readonly name: string;
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  readonly phone?: string;
 
-    @IsOptional()
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(50)
-    readonly phone?: string;
+  @IsString()
+  @MinLength(8)
+  @MaxLength(20)
+  @Matches(
+    /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
+    { message: 'Provided password is too weak' },
+  )
+  readonly password: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly password: string;
-
-    @IsString({ each: true })
-    @ArrayNotEmpty()
-    @ArrayMaxSize(6)
-    readonly role: string[];
-}
-
-export class DeleteUserDto {
-    //@IsJWT()
-    //readonly jwt: string;
-
-    @IsNumber()
-    @Min(0)
-    readonly id: number;
+  @IsString({ each: true })
+  @ArrayNotEmpty()
+  @ArrayMaxSize(6)
+  readonly role: string[];
 }
