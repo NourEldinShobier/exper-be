@@ -34,6 +34,41 @@ export class UsersService {
     return result;
   }
 
+  async getUsers(): Promise<any[]> {
+    /*
+    params: {
+        skip?: number;
+        take?: number;
+        cursor?: Prisma.UserWhereUniqueInput;
+        where?: Prisma.UserWhereInput;
+        orderBy?: Prisma.UserOrderByInput;
+      }
+    * */
+
+    const users = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        username: true,
+        createdAt: true,
+        updatedAt: true,
+        role: true,
+      },
+    });
+
+    return users;
+
+    // const { skip, take, cursor, where, orderBy } = params;
+    // return this.prisma.user.findMany({
+    //   skip,
+    //   take,
+    //   cursor,
+    //   where,
+    //   orderBy,
+    // });
+  }
+
   async update(params: {
     where: Prisma.UserWhereUniqueInput;
     data: Prisma.UserUpdateInput;
@@ -52,23 +87,5 @@ export class UsersService {
   async delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
     // TODO: check if failure occurs if not exist
     return this.prisma.user.delete({ where });
-  }
-
-  async users(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByInput;
-  }): Promise<User[]> {
-
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
   }
 }
