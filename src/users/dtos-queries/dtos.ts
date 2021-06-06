@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
   Matches,
   MaxLength,
   MinLength,
@@ -44,10 +45,14 @@ export class CreateUserDto {
 
 export class UpdateUserDto {
 
+  @IsUUID()
+  readonly id: string;
+
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  readonly name: string;
+  readonly name?: string;
 
   @IsOptional()
   @IsString()
@@ -55,6 +60,7 @@ export class UpdateUserDto {
   @MaxLength(50)
   readonly phone?: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(8)
   @MaxLength(20)
@@ -62,10 +68,11 @@ export class UpdateUserDto {
     /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
     { message: 'Provided password is too weak' },
   )
-  readonly password: string;
+  readonly password?: string;
 
+  @IsOptional()
   @IsString({ each: true })
   @ArrayNotEmpty()
   @ArrayMaxSize(6)
-  readonly role: string[];
+  readonly role?: string[];
 }

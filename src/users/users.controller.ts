@@ -1,9 +1,9 @@
 import { Response } from 'express';
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { Roles } from './roles.decorator';
-import { CreateUserDto } from './dto';
-import { CreateUserPipe } from './pipe/create-user.pipe';
+import { CreateUserDto, GetUsersQuery, UpdateUserDto } from './dtos-queries';
+import { CreateUserPipe } from './pipes/create-user.pipe';
 import { UsersService } from './users.service';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 
@@ -21,27 +21,37 @@ export class UsersController {
     @Res() res: Response,
   ) {
 
-    await this.usersService.createUser(userDto);
+    await this.usersService.createUser({ ...userDto });
 
     return res.status(HttpStatus.NO_CONTENT).send();
-  }
-
-  @Get()
-  @Roles(Role.ADMIN)
-  async getUsers() {
-    return this.usersService.getUsers();
-  }
-
-  @Put(':id')
-  @Roles(Role.ADMIN)
-  async updateUser(@Param('id') id: string) {
-    //return this.usersService.getUser({ id });
   }
 
   @Get(':id')
   @Roles(Role.ADMIN)
   async getUser(@Param('id') id: string) {
-    //return this.usersService.getUser({ id });
+    return this.usersService.getUser({ id });
+  }
+
+  @Get()
+  @Roles(Role.ADMIN)
+  async getUsers(@Query() query: GetUsersQuery) {
+    return this.usersService.getUsers({ ...query });
+  }
+
+  @Put()
+  @Roles(Role.ADMIN)
+  async updateUser(
+    @Body(CreateUserPipe) userDto: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+
+
+    // TODO: create a pipe(CreateUserPipe) to check if target user exist
+
+
+    await this.usersService.updateUser({ ...userDto });
+
+    return res.status(HttpStatus.NO_CONTENT).send();
   }
 
   @Delete(':id')
@@ -50,3 +60,4 @@ export class UsersController {
     //return this.usersService.getUser({ id });
   }
 }
+
