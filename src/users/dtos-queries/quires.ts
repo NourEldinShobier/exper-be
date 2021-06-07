@@ -15,8 +15,3 @@ export class GetUsersQuery {
   @Type(() => Number)
   readonly pageSize: number = 10;
 }
-
-export class SearchUsersQuery {
-
-}
-

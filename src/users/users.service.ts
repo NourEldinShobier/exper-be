@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, Scope } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { Prisma, Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -16,19 +16,26 @@ export class UsersService {
     password: string,
     phone?: string,
     role: string[],
-  }): Promise<User> {
-    const { name, username, password, phone, role } = params;
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
+  }) {
+    try {
+      const { name, username, password, phone, role } = params;
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-    return this.prisma.user.create({
-      data: {
-        name, phone, username,
-        password: hashedPassword,
-        salt: salt,
-        role: role.map(v => v as Role),
-      },
-    });
+      await this.prisma.user.create({
+        data: {
+          name, phone, username,
+          password: hashedPassword,
+          salt: salt,
+          role: role.map(v => v as Role),
+        },
+      });
+
+    } catch (e) {
+      if (e.code === 'P2002') throw new ConflictException('Account with provided username already exists');
+
+      throw new InternalServerErrorException();
+    }
   }
 
   async getUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
@@ -70,17 +77,31 @@ export class UsersService {
     phone?: string,
     password?: string,
     role?: string[],
-  }): Promise<User> {
-    const { id, name, phone, password, role } = params;
+  }) {
+    try {
+      const { id, name, phone, password, role } = params;
+      const mappedRole = role != undefined ? role.map(v => v as Role) : undefined;
 
-    return this.prisma.user.update({
-      data: { name, phone, password, role: role.map(v => v as Role) },
-      where: { id },
-    });
+      await this.prisma.user.update({
+        data: { name, phone, password, role: mappedRole },
+        where: { id },
+      });
+
+    } catch (e) {
+      if (e.code === 'P2025') throw new NotFoundException(e.meta.cause);
+
+      throw new InternalServerErrorException();
+    }
   }
 
-  async delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    // TODO: check if failure occurs if not exist
-    return this.prisma.user.delete({ where });
+  async deleteUser(id: string) {
+    try {
+      await this.prisma.user.delete({ where: { id } });
+
+    } catch (e) {
+      if (e.code === 'P2025') throw new NotFoundException(e.meta.cause);
+
+      throw new InternalServerErrorException();
+    }
   }
 }

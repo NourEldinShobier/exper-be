@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   Matches,
   MaxLength,
   MinLength,
@@ -45,7 +44,7 @@ export class CreateUserDto {
 
 export class UpdateUserDto {
 
-  @IsUUID()
+  @IsString()
   readonly id: string;
 
   @IsOptional()

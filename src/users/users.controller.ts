@@ -3,7 +3,6 @@ import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res
 import { Role } from '@prisma/client';
 import { Roles } from './roles.decorator';
 import { CreateUserDto, GetUsersQuery, UpdateUserDto } from './dtos-queries';
-import { CreateUserPipe } from './pipes/create-user.pipe';
 import { UsersService } from './users.service';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
 
@@ -16,10 +15,7 @@ export class UsersController {
 
   @Post()
   @Roles(Role.ADMIN)
-  async createUser(
-    @Body(CreateUserPipe) userDto: CreateUserDto,
-    @Res() res: Response,
-  ) {
+  async createUser(@Body() userDto: CreateUserDto, @Res() res: Response) {
 
     await this.usersService.createUser({ ...userDto });
 
@@ -41,23 +37,18 @@ export class UsersController {
   @Put()
   @Roles(Role.ADMIN)
   async updateUser(
-    @Body(CreateUserPipe) userDto: UpdateUserDto,
+    @Body() userDto: UpdateUserDto,
     @Res() res: Response,
   ) {
-
-
-    // TODO: create a pipe(CreateUserPipe) to check if target user exist
-
-
     await this.usersService.updateUser({ ...userDto });
-
-    return res.status(HttpStatus.NO_CONTENT).send();
+    return res.status(HttpStatus.OK).send();
   }
 
   @Delete(':id')
   @Roles(Role.ADMIN)
-  async deleteUser(@Param('id') id: string) {
-    //return this.usersService.getUser({ id });
+  async deleteUser(@Param('id') id: string, @Res() res: Response) {
+    await this.usersService.deleteUser(id);
+    return res.status(HttpStatus.OK).send();
   }
 }
 
