@@ -45,6 +45,7 @@ export class CreateUserDto {
 export class UpdateUserDto {
 
   @IsString()
+  @IsNotEmpty()
   readonly id: string;
 
   @IsOptional()

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, Scope } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { Prisma, Role, User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginatedData } from 'src/shared/interfaces';
 
@@ -38,8 +38,8 @@ export class UsersService {
     }
   }
 
-  async getUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    const result = await this.prisma.user.findUnique({ where });
+  async getUser(id: string): Promise<User> {
+    const result = await this.prisma.user.findUnique({ where: { id } });
 
     if (result === null) throw new NotFoundException();
 
@@ -72,7 +72,7 @@ export class UsersService {
   }
 
   async updateUser(params: {
-    id?: string,
+    id: string,
     name?: string,
     phone?: string,
     password?: string,

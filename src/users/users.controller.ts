@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { Roles } from './roles.decorator';
+import { Roles } from 'src/auth/roles.decorator';
 import { CreateUserDto, GetUsersQuery, UpdateUserDto } from './dtos-queries';
 import { UsersService } from './users.service';
 import { JwtAuthGuard, RolesGuard } from 'src/auth/guards';
@@ -25,7 +25,7 @@ export class UsersController {
   @Get(':id')
   @Roles(Role.ADMIN)
   async getUser(@Param('id') id: string) {
-    return this.usersService.getUser({ id });
+    return this.usersService.getUser(id);
   }
 
   @Get()
@@ -36,10 +36,7 @@ export class UsersController {
 
   @Put()
   @Roles(Role.ADMIN)
-  async updateUser(
-    @Body() userDto: UpdateUserDto,
-    @Res() res: Response,
-  ) {
+  async updateUser(@Body() userDto: UpdateUserDto, @Res() res: Response) {
     await this.usersService.updateUser({ ...userDto });
     return res.status(HttpStatus.OK).send();
   }
